@@ -1,5 +1,8 @@
 #/bin/sh
 
+if [[ "${DEBUG}" != "" ]] ; then
+  set -x
+fi
 
 # Set the has_failed variable to false. This will change if any of the subsequent database backups/uploads fail.
 has_failed=false
@@ -17,7 +20,7 @@ do
         echo -e "Database backup successfully completed for $CURRENT_DATABASE at $(date +'%d-%m-%Y %H:%M:%S')."
         backup_name=$CURRENT_DATABASE_$(date +"%Y-%m-%d_%H-%M-%S").sql
         # Perform the upload to S3. Put the output to a variable. If successful, print an entry to the console and the log. If unsuccessful, set has_failed to true and print an entry to the console and the log
-        if awsoutput=$(aws s3 cp /tmp/$CURRENT_DATABASE.sql $AWS_BUCKET_URI$AWS_BUCKET_BACKUP_PATH/$backup_name 2>&1)
+        if awsoutput=$(aws s3 ${S3_OPTIONS} cp /tmp/$CURRENT_DATABASE.sql $AWS_BUCKET_URI$AWS_BUCKET_BACKUP_PATH/$backup_name 2>&1)
         then
             echo -e "Database backup successfully uploaded for $CURRENT_DATABASE at $(date +'%d-%m-%Y %H:%M:%S')."
         else
