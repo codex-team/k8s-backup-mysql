@@ -18,7 +18,7 @@ The below table lists all of the Environment Variables that are configurable for
 | AWS_ACCESS_KEY_ID           | **(Required)** AWS IAM Access Key ID.                                                                            |
 | AWS_SECRET_ACCESS_KEY       | **(Required)** AWS IAM Secret Access Key. Should have very limited IAM permissions (see below for example) and should be configured using a Secret in Kubernetes.                                                                                                         |
 | AWS_DEFAULT_REGION          | **(Required)** Region of the S3 Bucket (e.g. eu-west-2).                                                         |
-| AWS_BUCKET_NAME             | **(Required)** The name of the S3 bucket.                                                                        |
+| AWS_BUCKET_URI              | **(Required)** The name of the S3 bucket.                                                                        |
 | AWS_BUCKET_BACKUP_PATH      | **(Required)** Path the backup file should be saved to in S3. E.g. `/database/myblog/backups`. **Do not put a trailing / or specify the filename.**                                                                                                        |
 | TARGET_DATABASE_HOST        | **(Required)** Hostname or IP address of the MySQL Host.                                                         |
 | TARGET_DATABASE_PORT        | **(Optional)** Port MySQL is listening on (Default: 3306).                                                       |
@@ -122,8 +122,8 @@ spec:
                      key: aws_secret_access_key
               - name: AWS_DEFAULT_REGION
                 value: "<Your S3 Bucket Region>"
-              - name: AWS_BUCKET_NAME
-                value: "<Your S3 Bucket Name>"
+              - name: AWS_BUCKET_URI
+                value: "<Your S3 Bucket URI>"
               - name: AWS_BUCKET_BACKUP_PATH
                 value: "<Your S3 Bucket Backup Path>"
               - name: TARGET_DATABASE_HOST
