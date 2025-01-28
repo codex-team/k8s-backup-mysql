@@ -15,9 +15,20 @@ do
     then
 
         echo -e "Database backup successfully completed for $CURRENT_DATABASE at $(date +'%d-%m-%Y %H:%M:%S')."
-        backup_name=$CURRENT_DATABASE_$(date +"%Y-%m-%d_%H-%M-%S").sql
+
+         FILENAME=$CURRENT_DATABASE_$(date +"%Y-%m-%d_%H-%M-%S")
+
+        if [ "$USE_COMPRESSION" = true ]
+        then
+          tar -czvf /tmp/$CURRENT_DATABASE.tar.gz /tmp/$CURRENT_DATABASE.sql
+          FILENAME=$FILENAME.tar.gz
+          awsoutput=$(aws s3 cp /tmp/$CURRENT_DATABASE.tar.gz s3://$AWS_BUCKET_BACKUP_PATH/$FILENAME --endpoint-url $AWS_BUCKET_URI 2>&1)
+        else
+          FILENAME=$FILENAME.sql
+          awsoutput=$(aws s3 cp /tmp/$CURRENT_DATABASE.sql s3://$AWS_BUCKET_BACKUP_PATH/$FILENAME --endpoint-url $AWS_BUCKET_URI 2>&1)
+        fi
         # Perform the upload to S3. Put the output to a variable. If successful, print an entry to the console and the log. If unsuccessful, set has_failed to true and print an entry to the console and the log
-        if awsoutput=$(aws s3 cp /tmp/$CURRENT_DATABASE.sql $AWS_BUCKET_URI$AWS_BUCKET_BACKUP_PATH/$backup_name 2>&1)
+        if [ "$awsoutput" = true ]
         then
             echo -e "Database backup successfully uploaded for $CURRENT_DATABASE at $(date +'%d-%m-%Y %H:%M:%S')."
         else
